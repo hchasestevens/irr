@@ -48,7 +48,11 @@
 \setcounter{tocdepth}{2}
 
 \clearpage
-\abstract{Abstract}
+\abstract{
+The aim of natural language programming is to allow written natural language
+specifications to be transformed into corresponding computer-executable formal language representations. Research in this field has largely tackled this task as performed in restricted domains; focusing on restricted subsets of both natural language specifications and programs. Three domains in particular have received special attention in the literature, these being the use of formalized, restricted variants of natural language specifications for the creation of programs, the translation of unrestricted natural language descriptions or directives into imperative formal languages, and the translation of natural language specifications or questions into declarative formal languages. There are also numerous methodologies and techniques used in natural language programming, the most prominent being those used in the field of machine translation, including semantic parsing, tree transduction, and, most recently, translation via artificial neural network.
+}
+
 \newpage
 
 \pagenumbering{arabic}
@@ -58,14 +62,87 @@
 
 \section{Introduction} \label{sec:intro}
 
-Intro 
-Test citation (delete me) \cite{Yehia2002}
+\begin{itemize}
+\item Expansion of abstract. 
+\item More formal exploration of various goals and interpretations of natural language programming. 
+\item Possible brief mention of historical focus and successes/failures.
+\item Motivation: 
+	\begin{enumerate}
+	\item Allowing non-programmers to write programs or, more generally, get computer to perform desired tasks.
+	\item Reduction of workload for programmers.
+	\end{enumerate}
+\end{itemize}
+
+
 
 \section{Background} \label{sec:back}
-Body
+\begin{itemize}
+\item Must decide whether to group research by domain (e.g. natural-language-inspired formal languages, question-answering/query systems, and ``general-purpose" natural language programming) or by methodology.
+\end{itemize}
+
+\subsection{Formalized natural language subsets}
+\begin{itemize}
+\item These approaches are largely historical/pre-statistical - should they be kept?
+\item Majority of the work in this field appears to be for database queries
+\item An interesting observation/distinction from more recent work is the presentation of an interactive interface, which allows active clarification of what the user is seeking and correction of errors made by the system. This is noted in \cite{capindale1990} as being an important feature for users.
+\item ADASCRIPT is mentioned as a natural-language query system, but I haven't been able to find scholarly work on it
+\item These approaches do not translate natural language into source code, but instead parse and directly execute natural language expressions
+\end{itemize}
+
+\cite{ballard1979} and \cite{biermann1983} describe NLC, a system for processing data stored in tables. The system allows for the description of procedures which query and manipulate these data through English-language commands, for example, ``Choose a row in the matrix" or ``Add five [to] the 2nd positive entry in col 2" \cite{ballard1979}. NLC is emblematic of a ``good old-fashioned AI" approach in that its lexicon consists solely of terms explicitly pre-defined. This means that the system is only able to recognize a very small vocabulary of 450 words and misspellings thereof \cite{ballard1979}. A hand-written grammar is used to parse natural language statements, and while this approach in conjunction with the limited vocabulary produces good translations of the recognized subset of English, it also severely limits what can be legally expressed (for example, both declarative statements and questions are disallowed) and presents a clear issue in terms of the system's scalability. Nevertheless, experimental results \cite{biermann1983} testify that NLC is perceived by users as providing a means of performing data manipulation that is both easier and faster than its contemporary alternatives. On the other hand, results also demonstrate that a significant proportion of users failed to achieve desired results using NLC, and also highlight users' frustrations in having to re-formulate English-language expressions in order to target NLC's subset of English.
+
+A system presented in \cite{heidorn1974} allows for declarative English-language specifications of scenarios for simulation. While the overall approach used is similar to that of NLC, including a limited hand-written lexicon, it notably differs in offering an interactive interface. In this way, the user is allowed to deliver a specification, then is asked by the system to clarify, elaborate on, and correct the system's interpretation of this specification.
+
+\cite{harris1977} describes a system (``ROBOT") for executing natural-language database queries employing a similar methodology to NLC, the notable distinctions being, firstly, that ROBOT allows both imperative commands (``PRINT THE NAME, MODEL OF CAR, AND INSURANCE COMPANY OF ALL EMPLOYEES") and questions (``WHAT DID WE SELL CUSTOMER 24618?") to be used, and that ROBOT leverages data labels (e.g. column names) from the database to be queried, incorporating these labels into its lexicon. It should be noted, however, that the latter is not an automatic process, but requires mappings between lexemes and data labels or values to be entered manually by database administrators. While users' success rate with ROBOT differs little from NLC, the system has the advantage of not requiring users to know the structure of tables in order to query them.
+
+There are several issues that pervade early natural language subset approaches to database querying, as highlighted in \cite{capindale1990}. The permitted vocabulary is often tightly bound to a specific database, which both serves to limit the usefulness and applicability of the natural language interface and requires users to have an intimate knowledge of the targeted database. Without being given a formal specification of the grammar and lexicon, users also often have to re-formulate queries repeatedly in order to achieve the results they want. 
+
+Indeed, the specificity with which users have to formulate their queries or directives, coupled with the disadvantage that even a carefully worded sentence may fail to succeed, raises the question of whether these systems as a whole are more effective than well designed formal query languages (such as SQL), alternative database management UIs, or other more traditional approaches. This is the case with the both NLC and the system presented in \cite{heidorn1974}, in which a full specification of the problem resembling a more verbose version of what might alternatively be expressed in source code is required from the user: while the user is spared having to learn a formal language's syntax, they instead are forced to use English to unambiguously explicate a scenario in a high level of detail.
+
+
+\subsection{Approaches targeting declarative formal languages}
+\begin{itemize}
+\item Maybe split into 3 subsections - query languages (SQL, XPath), functional (e.g. ROBOT, string manipulation), regular expressions (are these just a special case of query?) - problem: some papers (ge, mooney) span multiple?
+\end{itemize}
+
+\cite{mou2015} describes a system which generates simple programs (in C) from descriptions such as ``find the maximum and minimum numbers". This is achieved through the use of a recurrent neural network, which reads input and generates programs on a character-by-character (not token-by-token) basis. This is a preliminary study with few mentioned result. This approach has the disadvantage that the source code generated is not guaranteed to be syntactically valid, but it appears that the programs generated using this technique require only a few corrections to perform correctly.
+
+\cite{ge2009} demonstrates a means of taking a restricted natural language, for which there already exists a suitable syntactic parser, and leveraging this to create both formal language procedures and queries. The technique assumes one or more lambda-calculus representations exist for each terminal and non-terminal node in the syntactic tree, which itself is assumed to be binarized. These can then be composed into a number of possible resultant expressions; supervised learning is used to identify features that are most likely to indicate correct semantic representations.
+
+\cite{tannier2005} describes a technique for taking natural-language query specifications and converting them into a derivative of XPath, allowing for the querying of X/HTML documents. The problem is tackled from two sides: the XPath derivative used includes high-level predicates (e.g. ``\texttt{definition(a)}", ``\texttt{about(a)}") so as to be more clearly derivable from the natural language descriptions than standard XPath; likewise, the system only allows the use of a restricted set of lexical items which directly correspond to these high-level predicates, making parsing and subsequent semantic conversion an easier task. Improved results are achieved by using techniques from information retrieval to evaluate the relevance of various generated formal-language queries' results to the original natural-language query. The leveraging of domain-specific operations in this paper both serves to produce impressive results but also limit the technique's applicability to cases where high-level general procedures have already been defined in the target language.
+
+\cite{kate2005} describes a means of learning rules for translating natural language instructions and queries into formal language queries and procedures, assuming a syntactic parser is available for the natural language specifications. To do so, mappings are learned from subtrees of the syntactic parse of the natural language description to subtrees of the equivalent formal-language representation. The method shows an improvement not only in quality of translation but also in speed versus previous methods.
+
+The approach taken in \cite{raza2015} uses natural language descriptions of desired functionality in combination with user-provided examples to create string query and manipulation programs as formalized using a declarative DSL. The authors improve on previous work by requiring the user to specify both positive and negative examples not only for the overall task, but also individual constituents of the natural language description provided. For example, given an input like ``Replace any combination of 6 whole numbers with `X'," the user would be able to provide examples of ``6 whole numbers". By using these examples for particular phrases within the natural language specification, \cite{raza2015} is able to constrain the search space of possible programs adhering to the description and, in doing so, improve the accuracy both with which sub-components of the program are mapped to description constituents and with which these sub-components are composed together to reflect the overall program description.
+
+Lastly, \cite{karampatsis2015} illustrates a bi-directional technique for transforming both natural language descriptions into source code and vice-versa. When the system is trained, both natural language descriptions and their corresponding source code are parsed into trees; correspondences between sub-trees are then learned and used for tree transduction. This process as applied to the Geoquery dataset results in source code translations that perform better than baseline approaches, but fall short of results from state-of-the-art systems.
+
+\begin{itemize}
+\item Need to determine if ``Semantic Parsing on Freebase from Question-Answer Pairs" \cite{berant2013} should be included here or not.
+\end{itemize}
+
+
+\subsection{Approaches targeting imperative formal languages}
+\cite{kushman2013} describes a method for generating regular expressions from natural language descriptions, e.g. "three letter word starting with ’X’". To achieve this, the authors employ a semantic categorical grammar which targets the lambda calculus. Individual features of the description, once parsed, can then be unified into a single expression, which is then translatable into a regular expression. The authors claim that their algorithm shows significant improvement over previous work, and crucially exceeds 50\% accuracy in translation.
+
+\cite{mihalcea2006} attempts to convert user-provided natural language descriptions of procedures into non-executable program "skeletons", which can then be edited into working programs by the user. To do so, the system described attempts to find three types of features within the descriptions: "steps", "loops", and "comments". Shallow syntactic parses are used to identify these features and specify in what way they should be transformed into the skeleton. This technique appears to be relatively brittle and has the disadvantage of requiring human intervention to produce executable code, however, given the successes in machine-assisted translation, further work in this area has the potential to achieve favorable results.
+
+
 
 \section{Discussion} \label{sec:disc}
-Discussion
+\begin{itemize}
+\item Comparison of relative strengths/weaknesses of various approaches
+\item Deficiencies in current research/areas for further work
+	\begin{enumerate}
+	\item Only relatively recent exploration of ANNs for NL programming, despite good results in MT
+	\item Translation efforts for generalized descriptions have largely targeted ``traditional" imperative languages (C++, Python) despite greater success in declarative/stateless languages/languages with simple syntax - possible opportunity to try targeting a concise functional language
+	\item Difficulty to find training data/small data sets, e.g. geoquery has fewer than 1000 examples - opportunity to either use comments (e.g. python docstrings) or generate training data by performing (easier) translation from code to NL first
+	\item Wasn't able to find examples of recurrent neural networks being used, despite these being well suited to tree-representable data (i.e. both natural and formal languages)
+	\item I found very little work that had been done on languages other than English.
+	\end{enumerate}
+\end{itemize}
+
+
 
 \section{Conclusion} \label{sec:conc}
 Conclusion
